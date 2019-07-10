@@ -1,0 +1,7 @@
+DETECT_CUP = (cup_detected -> DETECT_DISTANCE|
+		cup_not_detected -> DETECT_CUP),
+LOOK_FOR_CUP = (cup_detected -> DETECT_DISTANCE |
+		cup_not_detected -> DETECT_CUP),
+DETECT_DISTANCE = (shorter_than_n_cm -> GRAB_CUP|
+		longer_than_n_cm -> LOOK_FOR_CUP),
+GRAB_CUP = (grab -> reset -> DETECT_CUP).

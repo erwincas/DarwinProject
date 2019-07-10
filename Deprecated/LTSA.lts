@@ -1,0 +1,6 @@
+BEKER_PAKKEN = (cup_detected -> DETECT_DISTANCE |
+		cup_not_detected -> BEKER_PAKKEN),
+DETECT_DISTANCE = (shorter_than_n_cm -> GRAB_CUP|
+		longer_than_n_cm -> TAKE_STEP),
+TAKE_STEP = (take_step -> BEKER_PAKKEN),
+GRAB_CUP = (grab -> reset -> BEKER_PAKKEN).
