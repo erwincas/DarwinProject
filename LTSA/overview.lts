@@ -1,0 +1,17 @@
+DETECTION_MANAGER = (cup_found -> CALCULATE_DISTANCE | cup_not_found -> SEND_DATA),
+CALCULATE_DISTANCE = (distance_calculated -> SEND_DATA),
+SEND_DATA = (data_sent -> DETECTION_MANAGER).
+
+MOTION_MANAGER = (ask_state -> ASK_STATE),
+ASK_STATE = (received_walking -> WALKING | received_grabbing -> GRABBING | received_idle -> IDLE),
+WALKING = (performed_walking -> MOTION_MANAGER),
+GRABBING = (performed_grabbing-> MOTION_MANAGER),
+IDLE = (performed_idling -> MOTION_MANAGER).
+
+STATE_SERVER_DETECTION_MANAGER = (wait_for_client -> STATE_SERVER_DETECTION_MANAGER | client_connected -> CLIENT_CONNECTED),
+CLIENT_CONNECTED = (ask_distance -> SET_STATE | client_disconnected -> ERROR),
+SET_STATE = (set_state -> CLIENT_CONNECTED).
+
+STATE_SERVER_MOTION_MANAGER = (wait_for_client -> STATE_SERVER_MOTION_MANAGER | client_connected -> CLIENT_CONNECTED),
+CLIENT_CONNECTED = (wait_for_command -> SEND_STATE | client_disconnected -> ERROR),
+SEND_STATE = (send_state -> CLIENT_CONNECTED).

@@ -15,16 +15,16 @@
 // This is a connection server with support for one connection at a time. Which was tested as successful.
 class ConnectionServer{
 private:
-    int socket_fd, current_conn_fd, addr_len;
+    int socket_fd, client_fd, addr_len;
     struct sockaddr_in address;
 public:
     char buffer[1024];
 
     explicit ConnectionServer(int);
     virtual ~ConnectionServer();
-    void waitForConnection();
-    void receiveFromConnection();
-    void sendToConnection(const char *);
+    void waitForClient();
+    void receiveFromClient();
+    void sendToClient(const char *);
     void closeConnection();
 };
 

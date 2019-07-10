@@ -10,16 +10,13 @@
 #include <errno.h>
 #include <time.h>
 
-enum StateMachine{
+#define GRABBING_DISTANCE 30
+
+
+enum States{
     IDLE,
     WALKING,
     GRABBING
-};
-
-enum StateTransitions{
-    CUP_IN_REACH,
-    CUP_NOT_IN_REACH,
-    CUP_NOT_FOUND
 };
 
 // This is a connection server with support for one connection at a time. Which was tested as successful.
@@ -28,7 +25,7 @@ public:
     long last_receival_time;
 
     ConnectionServer *computerVision, *motionManager;
-    enum StateMachine currentState;
+    enum States currentState;
 
     StateServer();
     virtual ~StateServer();

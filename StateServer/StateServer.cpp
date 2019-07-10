@@ -4,11 +4,11 @@
 
 #include "includes/StateServer.h"
 
-const char *stateToString(enum StateMachine stateMachine)
+const char *stateToString(enum States states)
 {
     static const char *strings[] = { "IDLE", "WALKING", "GRABBING"};
 
-    return strings[stateMachine];
+    return strings[states];
 }
 
 long getCurrentSecond(){
@@ -22,30 +22,37 @@ void *computerVisionThread(void* thread_arg){
     auto stateServer = (StateServer*)thread_arg;
 
     printf("Waiting for connection from the detection manager.\n");
-    stateServer->computerVision->waitForConnection();
+    stateServer->computerVision->waitForClient();
     printf("Detection manager connected!\n");
 
     long distance;
     char *eptr;
 
     while(1){
-        stateServer->computerVision->sendToConnection("ask_distance");
-        stateServer->computerVision->receiveFromConnection();
+        // Ask for the distance from the computer vision client
+        stateServer->computerVision->sendToClient("ask_distance");
 
+        // Wait until you get it
+        stateServer->computerVision->receiveFromClient();
+
+        // Store the time that the latest receival has taken place in
         stateServer->last_receival_time = getCurrentSecond();
 
         printf("Received distance from computer vision client: %s\n", stateServer->computerVision->buffer);
 
+        // Try to store the distance in a long
         distance = strtol(stateServer->computerVision->buffer, &eptr, 10);
 
         if(errno != EINVAL){
-            if(distance > 30){
-                stateServer->currentState = StateMachine::WALKING;
-            }else if(distance >= 0 && distance <= 30){
-                stateServer->currentState = StateMachine::GRABBING;
+            // If the distance is larger than GRABBING_DISTANCE then keep walking
+            if(distance > GRABBING_DISTANCE){
+                stateServer->currentState = States::WALKING;
+            }else if(distance >= 0 && distance <= GRABBING_DISTANCE){
+                // If the distance is between 0 and grabbing distance start grabbing the cup
+                stateServer->currentState = States::GRABBING;
             }else if(distance < 0){
-                //This is where it gets with a timeout
-                stateServer->currentState = StateMachine::IDLE;
+                // If the distance is smaller than 0 it means that no cup was detected. Start idling.
+                stateServer->currentState = States::IDLE;
             }
         }
 
@@ -54,24 +61,24 @@ void *computerVisionThread(void* thread_arg){
 }
 
 void *motionManagerThread(void* thread_arg){
-    int amountMsSinceLastData = 0;
-
     auto stateServer = (StateServer*)thread_arg;
 
     printf("Waiting for connection from the motion manager.\n");
-    stateServer->motionManager->waitForConnection();
+    stateServer->motionManager->waitForClient();
     printf("Motion manager connected!\n");
 
     while(1){
         if(getCurrentSecond() - stateServer->last_receival_time > 3){
             printf("Amount since last data is 3 seconds or more!\n");
-            stateServer->currentState = StateMachine::IDLE;
+            stateServer->currentState = States::IDLE;
         }
 
-        stateServer->motionManager->receiveFromConnection();
+        // Read the buffer from the client
+        stateServer->motionManager->receiveFromClient();
 
+        // If the motion manager asks for an update, pass the current state to him
         if(strncmp(stateServer->motionManager->buffer, "ask_state", 9) == 0){
-            stateServer->motionManager->sendToConnection(stateToString(stateServer->currentState));
+            stateServer->motionManager->sendToClient(stateToString(stateServer->currentState));
         }
         usleep(100*1000); //Sleep for 100ms
     }
@@ -81,7 +88,8 @@ StateServer::StateServer() {
     this->computerVision = new ConnectionServer(8080);
     this->motionManager = new ConnectionServer(8081);
 
-    this->currentState = StateMachine::IDLE;
+    // Starting state is IDLE
+    this->currentState = States::IDLE;
 
     pthread_attr_t threadAttr;
     pthread_t cvThread, mmThread;

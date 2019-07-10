@@ -1,0 +1,9 @@
+STATE_SERVER_DETECTION_MANAGER = (wait_for_client -> STATE_SERVER_DETECTION_MANAGER | client_connected -> CLIENT_CONNECTED),
+CLIENT_CONNECTED = (ask_distance -> SET_STATE | client_disconnected -> ERROR),
+SET_STATE = (set_state -> CLIENT_CONNECTED).
+
+STATE_SERVER_MOTION_MANAGER = (wait_for_client -> STATE_SERVER_MOTION_MANAGER | client_connected -> CLIENT_CONNECTED),
+CLIENT_CONNECTED = (wait_for_command -> SEND_STATE | client_disconnected -> ERROR),
+SEND_STATE = (send_state -> CLIENT_CONNECTED).
+
+||STATE_SERVER = (STATE_SERVER_DETECTION_MANAGER || STATE_SERVER_MOTION_MANAGER).
