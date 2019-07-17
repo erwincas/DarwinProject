@@ -21,12 +21,11 @@ enum States{
 
 // This is a connection server with support for one connection at a time. Which was tested as successful.
 class StateServer{
-public:
+private:
     long last_receival_time;
-
     ConnectionServer *computerVision, *motionManager;
     enum States currentState;
-
+public:
     StateServer();
     virtual ~StateServer();
 };
