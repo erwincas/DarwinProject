@@ -22,9 +22,9 @@ using namespace cv;
 DetectionClass::DetectionClass()
 {
     //constructor
-    this->topofcup_cascade.load("/home/robotis/Project/Herassessment/DetectionManager/cascades/topofcupcascade.xml");
+    
     this->frontofcup_cascade.load("/home/robotis/Project/Herassessment/DetectionManager/cascades/frontofcupcascade.xml");
-    if(topofcup_cascade.empty() || frontofcup_cascade.empty() )
+    if(frontofcup_cascade.empty() )
      {
       cerr<<"Error Loading Cascades"<<endl;
      }
@@ -62,7 +62,7 @@ void DetectionClass::getPhoto(void) {
     {
         cerr<<"Failed to open camera"<<endl;
     }
-    cap >> this->photo; //set frame als photo
+    cap >> this->photo; //set frame as photo
     cap.release(); //stop capturing
 }
 
@@ -104,33 +104,6 @@ Mat DetectionClass::filterRed(void) {
     return red;
 }
 
-/*
- * @brief Function for detecting the top of the cup using a Haar cascade
- * 
- * This function takes the topofcup_cascade and performs a detectMultiScale on it using the photo and stores the result
- * in a Rectangle.
- *
- * @return Rectangle
- */
-Rect DetectionClass::detectTop(void) {
-
-    vector<Rect> tops;
-    Rect top = Rect(-1,-1,-1,-1);
-    int diameter = 0;
-
-    topofcup_cascade.detectMultiScale( this->photo, tops, 1.1, 20, 0, Size(48, 48) );
-    for (int i=0 ; i < tops.size() ; i++)
-    {
-        int diametercurrent  = tops[i].width;
-        if(diametercurrent > diameter)
-        {
-            diameter = diametercurrent;
-            top = tops[i];
-        }
-    }
-    return top;
-
-}
 
 /*
  * @brief Function for finding the region of interest using the contours of the matrix containing the filtered frame
@@ -253,9 +226,8 @@ Rect DetectionClass::detectCup(vector<RotatedRect> Rois) {
 
         vector<Rect> cups;
 
-        this->topofcup_cascade.detectMultiScale(ROI, cups); //check if roi contains cup
-        //this->back_cup_cascade.detectMultiScale(ROI, cups);
-        //this->side_cup_cascade.detectMultiScale(ROI, cups);
+        this->frontofcup_cascade.detectMultiScale(ROI, cups); //check if roi contains cup
+
         //if so compare to earlier found cup or standard values to eventually return the closest cup (biggest in photo)
         if(0 < cups.size())
         {
@@ -276,6 +248,16 @@ Rect DetectionClass::detectCup(vector<RotatedRect> Rois) {
     return cup;
 
 }
+
+/*
+ * @brief Function for detecting the biggest Region of interest
+ * 
+ * @param Rois vector array of type RotatedRect
+ *
+ * @return Rectangle containing the region of the biggest Region of interest
+ */
+
+
 Rect DetectionClass::biggestROI(vector<RotatedRect> Rois) {
     //declare cupheight variable , rectangle for possible cup
     int ROIHeight=0;
@@ -304,34 +286,34 @@ Rect DetectionClass::biggestROI(vector<RotatedRect> Rois) {
 
 }
 
+/*
+ * @brief Function for getting the focal length for calculating distance using triangle equality
+ * 
+ * @param int perceived height of object, int actual distance to object
+ *
+ * @return int focalLength that can be used to calculate the distance to an object
+ */
 
-
-int DetectionClass::calibrateAt50cm(int PerceivedHeight)
+int DetectionClass::calibrate(int PerceivedWidth, int distance)
     {
         int focalLength;
 
-        focalLength = (PerceivedHeight*50)/this->actualHeight;
+        focalLength = (PerceivedWidth*distance)/this->actualWidth;
         return focalLength;
     }
-int DetectionClass::calibrateAt100cm(int PerceivedHeight)
-    {
-        int focalLength;
 
-        focalLength = (PerceivedHeight*100)/this->actualHeight;
-        return focalLength;
-    }
-int DetectionClass::calibrateAt150cm(int PerceivedHeight)
-    {
-        int focalLength;
-
-        focalLength = (PerceivedHeight*150)/this->actualHeight;
-        return focalLength;
-    }
-int DetectionClass::calculateDistance(int perceivedHeight)
+/*
+ * @brief Function for calculating the distance to an object using triangle equality
+ * 
+ * @param int perceived height of the object
+ *
+ * @return int distance containing the calculated distance to the object
+ */
+int DetectionClass::calculateDistance(int perceivedWidth)
     {
         int distance = 0;
-
-        distance = ((this->focalLength*this->actualHeight)/perceivedHeight);
+        
+        distance = ((this->focalLength*this->actualWidth)/perceivedWidth);
         return distance;
     }
 

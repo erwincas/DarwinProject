@@ -19,15 +19,11 @@ class DetectionClass
         void drawRoi(vector<RotatedRect>  Roi, int RoiIndex);
         Mat filterRed(void);
         Rect detectCup(vector<RotatedRect>  Rois);
-        Rect detectTop(void);
         Rect biggestROI(vector<RotatedRect>  Rois);
         void getPhoto(void);
-        int calibrateAt50cm(int PerceivedHeight);
-        int calibrateAt100cm(int PerceivedHeight);
-        int calibrateAt150cm(int PerceivedHeight);
-        int calculateDistance(int perceivedHeight);
-        //Mat photo;
-        
+        int calibrate(int PerceivedWidth, int Distance);
+        int calculateDistance(int perceivedWidth);
+              
     protected:
     //Variables
 
@@ -35,10 +31,9 @@ class DetectionClass
 
     private:
     //Variables
-    const int actualHeight = 10000;
-    const int focalLength = 10000; 
+    const int actualWidth = 7;
+    const int focalLength = 578; 
     CascadeClassifier frontofcup_cascade;
-    CascadeClassifier topofcup_cascade;
     Mat photo;
 
     //functions
