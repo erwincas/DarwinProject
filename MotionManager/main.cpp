@@ -1,4 +1,4 @@
-#include "MotionClass.h"
+#include "WalkingStateManager.h"
 #include "SocketCommunication.h"
 
 #include <stdio.h>
@@ -6,39 +6,58 @@
 #include <pthread.h>
 #include <string.h>
 
+struct arg_struct {
+    SocketCommunication *socket;
+    WalkingStateManager *walkingStateManager;
+}args;
+
 void *motionManagerThread(void *thread_args){
-    MotionClass motionClass;
-    SocketCommunication socket(8081);
+	printf("\n--------------------------\nmotion manager thread \n--------------------------\n");
+	struct arg_struct *mm_args = (arg_struct *) thread_args;
 
-	motionClass.walkForward();
-
+	
+	char str[1024];
+	
 	while(1){
-		socket.receiveFromServer();
+		mm_args->socket->receiveFromServer();
 
-		if(strncmp(socket.buffer, "WALKING", 7) == 0){
-			printf("NOW STARTING WALKING \n");
-		}else if(socket.buffer, "GRABBING", 8) == 0){
-			printf("NOW STARTING GRABBING \n");
-		}else if(socket.buffer, "IDLE", 4) == 0){
-			printf("NOW IDLING \n");
-		}
+			strcpy(str, mm_args->socket->buffer);
+
+			mm_args->walkingStateManager->walkFlag = 0;
+			if(strncmp(mm_args->socket->buffer, "WALKING", 7) == 0){
+				printf("NOW STARTING WALKING \n");
+				mm_args->walkingStateManager->walkFlag = 1;
+				mm_args->walkingStateManager->nextState();
+
+			}else if(strncmp(mm_args->socket->buffer, "GRABBING", 8) == 0){
+				printf("NOW STARTING GRABBING \n");
+				mm_args->walkingStateManager->nextState();
+
+			}else if(strncmp(mm_args->socket->buffer, "IDLE", 4) == 0){
+				printf("NOW IDLING \n");
+				mm_args->walkingStateManager->prevState();
+				
+			}
+		
+		mm_args->walkingStateManager->handle();
 	}
 }
 
 int main(void) {
-	pthread_attr_t threadAttr;
+
+	printf("\n--------------------------\n starting motionclass \n--------------------------\n");
+	args.walkingStateManager = new WalkingStateManager;
+
+	args.socket = new SocketCommunication(8081);
+	
     pthread_t mmThread;
-
-    pthread_attr_init(&threadAttr);
-
-    lowPriority.sched_priority = 60;
-
-    pthread_attr_setschedparam(&threadAttr, &lowPriority);
-    pthread_attr_setschedpolicy(&threadAttr, SCHED_FIFO);
-
-    pthread_create(&mmThread, &threadAttr, motionManagerThread, 0);
-
+	printf("\n--------------------------\nStart motion thread \n--------------------------\n");
+    pthread_create(&mmThread, NULL, motionManagerThread, &args);
+	
 	pthread_join(mmThread, NULL);
+	printf("\n--------------------------\nmotion thread stopped \n--------------------------\n");
 
 	return 0;
 }
+
+

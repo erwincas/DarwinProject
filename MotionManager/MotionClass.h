@@ -18,18 +18,23 @@
 
 using namespace Robot;
 
+//class MotionManager;
+//class Action;
+
 class MotionClass
 {
 	public:
 		MotionClass();
 		virtual ~MotionClass();
+		bool walkFlag;
 		void walkForward();
 		void rotateLeft();
 		void rotateRight();
+		void grab();
 
 	private:
-		minIni* ini;
-		void init();
+		bool init_Framework(void);
+		//bool init(void);
 		void change_current_dir();
 };
 
