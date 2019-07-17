@@ -1,10 +1,3 @@
-/*
- * CALCULATEDISTANCE.h
- *
- *  Created on: May 7, 2017
- *      Author: rlarson
- */
-
 #ifndef CALCULATEDISTANCE_H_
 #define CALCULATEDISTANCE_H_
 

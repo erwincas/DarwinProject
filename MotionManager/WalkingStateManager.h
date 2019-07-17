@@ -1,10 +1,3 @@
-/*
- * WalkingManager.h
- *
- *  Created on: May 7, 2017
- *      Author: rlarson
- */
-
 #ifndef WALKINGSTATEMANAGER_H_
 #define WALKINGSTATEMANAGER_H_
 

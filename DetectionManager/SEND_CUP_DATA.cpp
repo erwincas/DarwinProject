@@ -1,10 +1,3 @@
-/*
- * PausedState.cpp
- *
- *  Created on: May 7, 2017
- *      Author: rlarson
- */
-
 #include "SEND_CUP_DATA.h"
 #include "DetectionManager.h"
 

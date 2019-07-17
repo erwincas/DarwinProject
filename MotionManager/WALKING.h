@@ -1,10 +1,3 @@
-/*
- * CALCULATEDISTANCE.h
- *
- *  Created on: May 7, 2017
- *      Author: rlarson
- */
-
 #ifndef WALKING_H_
 #define WALKING_H_
 

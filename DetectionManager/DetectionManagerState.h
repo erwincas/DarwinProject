@@ -1,10 +1,3 @@
-/*
- * MusicPlayerState.h
- *
- *  Created on: May 7, 2017
- *      Author: rlarson
- */
-
 #ifndef DETECTIONMANAGERSTATE_H_
 #define DETECTIONMANAGERSTATE_H_
 

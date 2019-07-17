@@ -1,10 +1,3 @@
-/*
- * StoppedState.h
- *
- *  Created on: May 7, 2017
- *      Author: rlarson
- */
-
 #ifndef LOOKFORCUP_H_
 #define LOOKFORCUP_H_
 

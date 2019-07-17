@@ -1,10 +1,3 @@
-/*
- *
- *
- *  
- *      
- */
-
 #ifndef WALKINGMANAGERSTATE_H_
 #define WALKINGMANAGERSTATE_H_
 

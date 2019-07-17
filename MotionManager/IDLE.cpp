@@ -1,10 +1,3 @@
-/*
- * StoppedState.cpp
- *
- *  Created on: May 7, 2017
- *      Author: rlarson
- */
-
 #include "IDLE.h"
 #include "WalkingStateManager.h"
 

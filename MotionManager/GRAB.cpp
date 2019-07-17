@@ -1,10 +1,3 @@
-/*
- * PausedState.cpp
- *
- *  Created on: May 7, 2017
- *      Author: rlarson
- */
-
 #include "GRAB.h"
 #include "WalkingStateManager.h"
 

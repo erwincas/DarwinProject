@@ -1,10 +1,3 @@
-/*
- * SEND_CUP_DATA.h
- *
- *  Created on: May 7, 2017
- *      Author: rlarson
- */
-
 #ifndef SENDCUPDATA_H_
 #define SENDCUPDATA_H_
 

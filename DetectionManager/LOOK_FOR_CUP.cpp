@@ -1,10 +1,3 @@
-/*
- * StoppedState.cpp
- *
- *  Created on: May 7, 2017
- *      Author: rlarson
- */
-
 #include "LOOK_FOR_CUP.h"
 #include "DetectionManager.h"
 #include "opencv2/opencv.hpp"

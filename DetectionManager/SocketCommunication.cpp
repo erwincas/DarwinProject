@@ -1,7 +1,3 @@
-//
-// Created by erwin on 10-7-19.
-//
-
 #include "SocketCommunication.h"
 
 SocketCommunication::SocketCommunication(int port) {

@@ -1,10 +1,3 @@
-/*
- * DetectionManager.h
- *
- *  Created on: May 7, 2017
- *      Author: rlarson
- */
-
 #ifndef DETECTIONMANAGER_H_
 #define DETECTIONMANAGER_H_
 

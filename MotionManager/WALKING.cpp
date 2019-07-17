@@ -1,10 +1,3 @@
-/*
- * PlayingState.cpp
- *
- *  Created on: May 7, 2017
- *      Author: rlarson
- */
-
 #include "WALKING.h"
 #include "WalkingStateManager.h"
 
